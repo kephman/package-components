@@ -7,7 +7,6 @@ jobs:
   auto_bump_version_job:
     runs-on: ubuntu-latest
     name: A job to bump the version
-    if: "startsWith(github.event.head_commit.message, 'FEAT:')"
     steps:
       - uses: actions/checkout@v2
       - run: git config --global user.name 'kephman'
