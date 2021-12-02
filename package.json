@@ -1,0 +1,20 @@
+{
+  "name": "package-components",
+  "version": "1.0.0",
+  "description": "A test package to use workflows",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kephman/package-components.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kephman/package-components/issues"
+  },
+  "homepage": "https://github.com/kephman/package-components#readme"
+}
