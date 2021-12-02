@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Hello world action step
         id: hello
-        uses: kephman/auto-version-node@v1.0.0
+        uses: kephman/auto-version-node@v1.0.1
         with:
           who-to-greet: 'Keph'
       # Use the output from the `hello` step
