@@ -1,15 +1,16 @@
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   auto_bump_version_job:
     runs-on: ubuntu-latest
     name: A job to bump the version
+    if: "!startsWith(github.event.head_commit.message, '[FEAT]')"
     steps:
-      - name: Hello world action step
-        id: hello
-        uses: kephman/auto-version-node@v1.0.2
-        with:
-          who-to-greet: 'Keph'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - uses: actions/checkout@v2
+      - run: git config --global user.name 'kephman'
+      - run: git config --global user.email 'kepher@gmail.com'
+      - run: npm version patch -m "[FEAT] %s"
+      - run: git push
