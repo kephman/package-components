@@ -1,1 +1,1 @@
-console.log('hellow actions.');
+console.log('Hello actions!');
