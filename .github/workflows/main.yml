@@ -16,7 +16,7 @@ jobs:
       - name: Update Version
         id: updateVersion
         run: PACKAGE_VERSION=$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-          echo '::set-output name=PACKAGE_VERSION::${PACKAGE_VERSION}'
+          echo '::set-output name=PACKAGE_VERSION::${{ PACKAGE_VERSION }}'
       - name: Echo Version
         id: echoVersion
-        run: echo '${GITHUB_REPOSITORY}-${{ steps.updateVersion.output.PACKAGE_VERSION }}''
+        run: echo '$GITHUB_REPOSITORY-${{ steps.updateVersion.output.PACKAGE_VERSION }}''
