@@ -1,6 +1,6 @@
 {
   "name": "package-components",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A test package to use workflows",
   "main": "index.js",
   "scripts": {
