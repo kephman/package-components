@@ -20,7 +20,7 @@ jobs:
         id: setupCommit
         run: |
           BRANCH_NAME=$GITHUB_REPOSITORY-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
-          echo '::set-output name=BRANCH_NAME_PUSHED::$BRANCH_NAME'
+          echo '::set-output name=BRANCH_NAME_PUSHED::${{ BRANCH_NAME }}'
       - name: Echo Version
         id: echoVersion
         run: echo "${{ steps.setupCommit.outputs.BRANCH_NAME_PUSHED }}"
