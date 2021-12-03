@@ -12,4 +12,4 @@ jobs:
       - run: git config --global user.name 'kephman'
       - run: git config --global user.email 'kepher@gmail.com'
       - run: npm version patch -m "Feature version update %s"
-      - run: git push
+      - run: git push --force
