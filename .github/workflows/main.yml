@@ -8,13 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Auto increment package version
     steps:
-      - name: Checkout and update package version
-        id: checkoutAndUpdateVersion
+      - name: Checkout Package
+        id: checkoutPackage
         uses: actions/checkout@v2
         with:
           access-token: ${{ secrets.ACTIONS_TOKEN }}
-        run: |
-          npm version patch -m "Feature version update %s"
-          git push --force
-          ::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-          echo ${{ env.GITHUB_REPOSITORY }}-${PACKAGE_VERSION}
+      - name: Update Version
+        id: updateVersion
+        run: ::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
+      - name: Echo Version
+        id: updateVersion
+        run: echo ${{ env.GITHUB_REPOSITORY }}-${{ steps.updateVersion.output.PACKAGE_VERSION }}
