@@ -16,5 +16,4 @@ jobs:
         run: npm version patch -m "Feature version update %s"
         run: git push --force
         run: ::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-        run: ::set-output name=PACKAGE_NAME::$(sed -nE 's/^\s*"name": "(.*?)",$/\1/p' package.json)
-        run: echo ${PACKAGE_NAME}-${PACKAGE_VERSION}
+        run: echo ${{ env.GITHUB_REPOSITORY }}-${PACKAGE_VERSION}
