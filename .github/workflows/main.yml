@@ -18,7 +18,8 @@ jobs:
         run: echo '::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")'
       - name: Setup Commit
         id: setupCommit
-        run: BRANCH_NAME=$GITHUB_REPOSITORY-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
+        run: |
+          BRANCH_NAME=$GITHUB_REPOSITORY-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           echo '::set-output name=BRANCH_NAME_PUSHED::$BRANCH_NAME'
       - name: Echo Version
         id: echoVersion
