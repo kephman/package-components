@@ -13,7 +13,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           access-token: ${{ secrets.ACTIONS_TOKEN }}
-        run: npm version patch -m "Feature version update %s"
-        run: git push --force
-        run: ::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-        run: echo ${{ env.GITHUB_REPOSITORY }}-${PACKAGE_VERSION}
+        run: |
+          npm version patch -m "Feature version update %s"
+          git push --force
+          ::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
+          echo ${{ env.GITHUB_REPOSITORY }}-${PACKAGE_VERSION}
