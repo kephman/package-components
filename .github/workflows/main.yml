@@ -15,7 +15,7 @@ jobs:
           token: ${{ secrets.ACTIONS_TOKEN }}
       - name: Update Version
         id: updateVersion
-        run: echo "::set-output name=PACKAGE_VERSION::green"
+        run: echo '::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")'
       - name: Echo Version
         id: echoVersion
         run: echo "$GITHUB_REPOSITORY-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}"
