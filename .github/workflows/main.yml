@@ -20,9 +20,10 @@ jobs:
           BRANCH_NAME=${{ github.event.repository.name  }}-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
+          echo ::set-output name=BRANCH_EXISTS::$(eval "git show-ref --verify refs/heads/${BRANCH_NAME}")
       - name: Checkout New Branch
         id: checkoutNewBranch
-        if: ${{ startsWith($(eval "git show-ref --verify refs/heads/${steps.updateVersion.outputs.BRANCH_NAME}"), "fatal:") }}
+        if: ${{ startsWith(steps.updateVersion.outputs.BRANCH_EXISTS, "fatal:") }}
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
