@@ -20,7 +20,7 @@ jobs:
           BRANCH_NAME=${{ github.event.repository.name }}-${PACKAGE_VERSION}
           echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
-          BRANCH_EXISTS=$(eval "git show-ref --verify --quiet refs/heads/${BRANCH_NAME}") && echo true || echo false
+          BRANCH_EXISTS=$($(eval "git show-ref --verify --quiet refs/heads/${BRANCH_NAME}") && echo true || echo false)
           echo ::debug::$(echo ${BRANCH_EXISTS})
           echo ::set-output name=BRANCH_EXISTS::$(echo ${BRANCH_EXISTS})
       - name: Checkout New Branch
