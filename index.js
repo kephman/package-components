@@ -1,1 +1,1 @@
-console.log('Hello workflow actions 5!');
+console.log('Hello workflow actions!');
