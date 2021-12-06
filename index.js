@@ -1,1 +1,1 @@
-console.log('Hello workflow actions!');
+console.log('Updating the package version!');
