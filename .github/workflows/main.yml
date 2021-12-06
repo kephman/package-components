@@ -17,29 +17,31 @@ jobs:
         id: updateVersion
         run: |
           PACKAGE_VERSION=$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-          BRANCH_NAME=${{ github.event.repository.name }}-${PACKAGE_VERSION}
           echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
+      - name: Verify Branch
+        id: verifyBranch
+        run: |
+          BRANCH_NAME=${{ github.event.repository.name }}-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
           BRANCH_EXISTS=$($(eval "git show-ref --verify --quiet refs/heads/${BRANCH_NAME}") && echo true || echo false)
-          echo ::debug::$(echo ${BRANCH_EXISTS})
           echo ::set-output name=BRANCH_EXISTS::$(echo ${BRANCH_EXISTS})
-      - name: Checkout New Branch
-        id: checkoutNewBranch
-        if: ${{ steps.updateVersion.outputs.BRANCH_EXISTS == 'false' }}
+      - name: Commit New Branch
+        id: commitNewBranch
+        if: ${{ steps.verifyBranch.outputs.BRANCH_EXISTS == 'false' }}
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
-          eval git checkout -b ${steps.updateVersion.outputs.BRANCH_NAME}"
+          eval "git checkout -b ${steps.verifyBranch.outputs.BRANCH_NAME}"
           eval "git commit -am \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
-          eval "git push --set-upstream origin ${{ steps.updateVersion.outputs.BRANCH_NAME }}"
+          eval "git push --set-upstream origin ${{ steps.verifyBranch.outputs.BRANCH_NAME }}"
           echo ::set-output name=NEW_BRANCH::true
-      - name: Checkout Branch
-        id: checkoutBranch
-        if: ${{ steps.updateVersion.outputs.BRANCH_EXISTS == 'true' }}
+      - name: Commit Existing Branch
+        id: commitExistingBranch
+        if: ${{ steps.verifyBranch.outputs.BRANCH_EXISTS == 'true' }}
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
-          eval git checkout ${steps.updateVersion.outputs.BRANCH_NAME}"
+          eval git checkout ${steps.verifyBranch.outputs.BRANCH_NAME}"
           git pull
           eval "git commit -am \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
           eval "git push"
@@ -48,5 +50,5 @@ jobs:
         uses: kephman/auto-version-node@v1.0.3
         with:
           access-token: ${{ secrets.ACTIONS_TOKEN }}
-          branch-name: ${{ steps.updateVersion.outputs.BRANCH_NAME }}
+          branch-name: ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
           package-version: ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
