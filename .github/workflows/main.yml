@@ -17,14 +17,12 @@ jobs:
         id: updateVersion
         run: |
           PACKAGE_VERSION=$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-          echo ::debug::$(echo ${PACKAGE_VERSION})
           BRANCH_NAME=${{ github.event.repository.name }}-${PACKAGE_VERSION}
-          echo ::debug::$(echo ${BRANCH_NAME})
           echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
-          BRANCH_EXISTS=$(eval "git show-ref --verify refs/heads/${BRANCH_NAME}")
-          echo ::set-output name=BRANCH_EXISTS::$(echo ${BRANCH_EXISTS})
+          BRANCH_EXISTS=$(eval "git show-ref --verify refs/heads/${BRANCH_NAME}" || 'false')
           echo ::debug::$(echo ${BRANCH_EXISTS})
+          echo ::set-output name=BRANCH_EXISTS::$(echo ${BRANCH_EXISTS})
       - name: Checkout New Branch
         id: checkoutNewBranch
         if: ${{ startsWith(steps.updateVersion.outputs.BRANCH_EXISTS, 'fatal:') }}
