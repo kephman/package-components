@@ -20,12 +20,12 @@ jobs:
           BRANCH_NAME=${{ github.event.repository.name }}-${PACKAGE_VERSION}
           echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
-          BRANCH_EXISTS=$(eval "git show-ref --verify refs/heads/${BRANCH_NAME}" || 'false')
+          BRANCH_EXISTS=$(eval "git show-ref --verify --quiet refs/heads/${BRANCH_NAME}") && echo 'true' || 'false'
           echo ::debug::$(echo ${BRANCH_EXISTS})
           echo ::set-output name=BRANCH_EXISTS::$(echo ${BRANCH_EXISTS})
       - name: Checkout New Branch
         id: checkoutNewBranch
-        if: ${{ startsWith(steps.updateVersion.outputs.BRANCH_EXISTS, 'fatal:') }}
+        if: ${{ steps.updateVersion.outputs.BRANCH_EXISTS == 'false' }}
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
@@ -35,7 +35,7 @@ jobs:
           echo ::set-output name=NEW_BRANCH::true
       - name: Checkout Branch
         id: checkoutBranch
-        if: ${{ steps.checkoutNewBranch.outputs.NEW_BRANCH != 'true' }}
+        if: ${{ steps.updateVersion.outputs.BRANCH_EXISTS == 'true' }}
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
