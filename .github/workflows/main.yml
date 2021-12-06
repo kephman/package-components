@@ -16,11 +16,21 @@ jobs:
       - name: Update Version
         id: updateVersion
         run: echo ::set-output name=PACKAGE_VERSION::$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
-      - name: Setup Commit
-        id: setupCommit
+      - name: Checkout Branch
+        id: checkoutBranch
         run: |
           BRANCH_NAME=$GITHUB_REPOSITORY-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
-          echo ::set-output name=BRANCH_NAME_PUSHED::$(echo ${BRANCH_NAME})
-      - name: Echo Version
-        id: echoVersion
-        run: echo "${{ steps.setupCommit.outputs.BRANCH_NAME_PUSHED }}"
+          eval "git checkout ${BRANCH_NAME} || git checkout -b ${BRANCH_NAME}"
+          echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
+      - name: Commit Changes
+        id: commitChanges
+        run: |
+          eval "git commit -a -m \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
+          eval "git push --set-upstream origin ${{ steps.checkoutBranch.outputs.BRANCH_NAME }}"
+      - name: Create Pull Request
+        id: createPull
+        uses: kephman/auto-version-node@v1.0.3
+        with:
+          access-token: ${{ secrets.ACTIONS_TOKEN }}
+          branch-name: ${{ steps.checkoutBranch.outputs.BRANCH_NAME }}
+          package-version: ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
