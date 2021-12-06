@@ -1,1 +1,1 @@
-console.log('Updating the package version!');
+console.log('Updating the package version 2!');
