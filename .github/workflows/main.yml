@@ -19,13 +19,15 @@ jobs:
       - name: Checkout Branch
         id: checkoutBranch
         run: |
+          git config --global user.name "kephman"
+          git config --global user.email "kepher@gmail.com"
           BRANCH_NAME=$GITHUB_REPOSITORY-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           eval "git checkout ${BRANCH_NAME} || git checkout -b ${BRANCH_NAME}"
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
       - name: Commit Changes
         id: commitChanges
         run: |
-          eval "git commit -a -m \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
+          eval "git commit -am \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
           eval "git push --set-upstream origin ${{ steps.checkoutBranch.outputs.BRANCH_NAME }}"
       - name: Create Pull Request
         id: createPull
