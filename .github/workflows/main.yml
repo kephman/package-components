@@ -42,11 +42,12 @@ jobs:
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
           eval git checkout ${steps.verifyBranch.outputs.BRANCH_NAME}"
-          git pull
+          git merge master
           eval "git commit -am \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
           eval "git push"
       - name: Create Pull Request
         id: createPull
+        if: ${{ steps.verifyBranch.outputs.BRANCH_EXISTS == 'false' }}
         uses: kephman/auto-version-node@v1.0.7
         with:
           access-token: ${{ secrets.ACTIONS_TOKEN }}
