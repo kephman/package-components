@@ -31,9 +31,9 @@ jobs:
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
-          eval "git checkout -b ${{ steps.verifyBranch.outputs.BRANCH_NAME }}"
-          eval "git commit -am \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
-          eval "git push --set-upstream origin ${{ steps.verifyBranch.outputs.BRANCH_NAME }}"
+          git checkout -b ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
+          git commit -am "AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}"
+          git push --set-upstream origin ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
           echo ::set-output name=NEW_BRANCH::true
       - name: Commit Existing Branch
         id: commitExistingBranch
@@ -41,9 +41,9 @@ jobs:
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
-          eval git checkout ${steps.verifyBranch.outputs.BRANCH_NAME}"
+          git checkout ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
           git merge master
-          eval "git commit -am \"AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}\""
+          git commit -am "AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}"
           eval "git push"
       - name: Create Pull Request
         id: createPull
