@@ -27,7 +27,7 @@ jobs:
           echo ::set-output name=BRANCHES::$(git branch --list --remote)
       - name: Verify Branch
         id: verifyBranch
-        run: echo ::set-output name=BRANCH_EXISTS::${{ contains(steps.setBranch.outputs.BRANCHES, steps.setBranch.outputs.ORIGIN_BRANCH_NAME) }})
+        run: echo ::set-output name=BRANCH_EXISTS::${{ contains(steps.setBranch.outputs.BRANCHES, steps.setBranch.outputs.ORIGIN_BRANCH_NAME) }}
       - name: Commit New Branch
         id: commitNewBranch
         if: ${{ steps.verifyBranch.outputs.BRANCH_EXISTS == 'false' }}
