@@ -18,22 +18,24 @@ jobs:
         run: |
           PACKAGE_VERSION=$(npm version patch --allow-same-version false --git-tag-version false -m "Automated version update for %s")
           echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
-      - name: Verify Branch
-        id: verifyBranch
+      - name: Set Branch
+        id: setBranch
         run: |
           BRANCH_NAME=${{ github.event.repository.name }}-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
-          BRANCH_EXISTS=$($(eval "git show-ref --verify --quiet refs/heads/${BRANCH_NAME}") && echo true || echo false)
-          echo ::set-output name=BRANCH_EXISTS::$(echo ${BRANCH_EXISTS})
+          echo ::set-output name=BRANCHES=$(git branch --list)
+      - name: Verify Branch
+        id: verifyBranch
+        run: echo ::set-output name=BRANCH_EXISTS::${{ contains(steps.setBranch.outputs.BRANCHES, steps.setBranch.outputs.BRANCH_NAME) }})
       - name: Commit New Branch
         id: commitNewBranch
         if: ${{ steps.verifyBranch.outputs.BRANCH_EXISTS == 'false' }}
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
-          git checkout -b ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
+          git checkout -b ${{ steps.setBranch.outputs.BRANCH_NAME }}
           git commit -am "AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}"
-          git push --set-upstream origin ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
+          git push --set-upstream origin ${{ steps.setBranch.outputs.BRANCH_NAME }}
           echo ::set-output name=NEW_BRANCH::true
       - name: Commit Existing Branch
         id: commitExistingBranch
@@ -41,7 +43,7 @@ jobs:
         run: |
           git config --global user.name "kephman"
           git config --global user.email "kepher@gmail.com"
-          git checkout ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
+          git checkout ${{ steps.setBranch.outputs.BRANCH_NAME }}
           git merge master
           git commit -am "AUTO: Version update for ${{ steps.updateVersion.outputs.PACKAGE_VERSION }}"
           eval "git push"
