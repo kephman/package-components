@@ -23,10 +23,11 @@ jobs:
         run: |
           BRANCH_NAME=${{ github.event.repository.name }}-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
-          echo ::set-output name=BRANCHES=$(git branch --list)
+          echo ::set-output name=ORIGIN_BRANCH_NAME::$(echo origin/${BRANCH_NAME})
+          echo ::set-output name=BRANCHES::$(git branch --list --remote)
       - name: Verify Branch
         id: verifyBranch
-        run: echo ::set-output name=BRANCH_EXISTS::${{ contains(steps.setBranch.outputs.BRANCHES, steps.setBranch.outputs.BRANCH_NAME) }})
+        run: echo ::set-output name=BRANCH_EXISTS::${{ contains(steps.setBranch.outputs.BRANCHES, steps.setBranch.outputs.ORIGIN_BRANCH_NAME) }})
       - name: Commit New Branch
         id: commitNewBranch
         if: ${{ steps.verifyBranch.outputs.BRANCH_EXISTS == 'false' }}
