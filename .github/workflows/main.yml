@@ -47,7 +47,7 @@ jobs:
           eval "git push"
       - name: Create Pull Request
         id: createPull
-        uses: kephman/auto-version-node@v1.0.5
+        uses: kephman/auto-version-node@v1.0.7
         with:
           access-token: ${{ secrets.ACTIONS_TOKEN }}
           branch-name: ${{ steps.verifyBranch.outputs.BRANCH_NAME }}
