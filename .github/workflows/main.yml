@@ -23,7 +23,8 @@ jobs:
         run: |
           BRANCH_NAME=${{ github.event.repository.name }}-${{ steps.updateVersion.outputs.PACKAGE_VERSION }}
           echo ::set-output name=BRANCH_NAME::$(echo ${BRANCH_NAME})
-          echo ::set-output name=ORIGIN_BRANCH::$(git branch --remote | grep -i origin/$(echo ${BRANCH_NAME}))
+          ORIGIN_BRANCH=$(git branch --remote | grep -i origin/${BRANCH_NAME})
+          echo ::set-output name=ORIGIN_BRANCH::$(echo ${ORIGIN_BRANCH})
       - name: Verify Branch
         id: verifyBranch
         run: echo ::set-output name=BRANCH_EXISTS::${{ contains(steps.setBranch.outputs.ORIGIN_BRANCH, steps.setBranch.outputs.BRANCH_NAME) }}
